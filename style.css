@@ -1,0 +1,188 @@
+/* Custom properties for easy color management */
+:root {
+    --primary-color: #4CAF50; /* ירוק מנטה רענן */
+    --secondary-color: #2196F3; /* כחול שמיים */
+    --accent-color: #FFC107; /* צהוב חם */
+    --text-dark: #2c3e50; /* כחול כהה לטקסט */
+    --text-light: #ecf0f1; /* אפור בהיר לטקסט */
+    --bg-light: #f8faff; /* רקע כללי בהיר */
+    --card-bg: #ffffff; /* רקע כרטיס לבן */
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: 'Heebo', sans-serif; /* פונט עברי מודרני */
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    text-align: right;
+    direction: rtl; /* כיוון קריאה מימין לשמאל */
+    line-height: 1.6;
+    overflow-x: hidden; /* מניעת גלילה אופקית */
+}
+
+/* Hero Section - מודרני ומושך */
+.hero {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: var(--text-light);
+    padding: 100px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 20px var(--shadow-color);
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;utf8,<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="diagonal-stripes" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M-1,1 l2,-2 M0,10 l10,-10 M9,11 l2,-2" stroke="rgba(255,255,255,0.1)" stroke-width="1" /></pattern></defs><rect width="100%" height="100%" fill="url(%23diagonal-stripes)" /></svg>') repeat;
+    opacity: 0.3;
+    z-index: 0;
+}
+
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero h1 {
+    font-size: 3.5em;
+    margin-bottom: 15px;
+    font-weight: 700;
+    line-height: 1.2;
+    animation: fadeInDown 1s ease-out forwards;
+}
+
+.hero p {
+    font-size: 1.3em;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 0.5s forwards;
+}
+
+/* Animations for hero text */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Section for content */
+.content-section {
+    max-width: 1300px;
+    margin: 0px auto 60px;
+    padding: 0 20px;
+}
+
+/* Video Grid - מערך סרטונים מודרני */
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+/* Video Card - כרטיס סרטון מעוצב */
+.video-card {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 8px 25px var(--shadow-color);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.video-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    background-color: #fcfcfc;
+}
+
+.video-title {
+    padding: 15px 20px;
+    font-size: 1.1em;
+    font-weight: 500;
+    color: var(--text-dark);
+    min-height: 70px; /* גובה מינימלי לכותרת */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* יישור לימין */
+    text-align: right;
+    border-bottom: 1px solid #eee;
+}
+
+/* Video Wrapper for 16:9 aspect ratio */
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    background-color: #000;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 30px 20px;
+    margin-top: 50px;
+    background-color: var(--text-dark);
+    color: var(--text-light);
+    font-size: 0.9em;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.5em;
+    }
+    .hero p {
+        font-size: 1.1em;
+    }
+    .content-section {
+        padding: 0 15px;
+    }
+    .video-grid {
+        gap: 20px;
+    }
+    .video-title {
+        font-size: 1em;
+        min-height: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero {
+        padding: 80px 15px;
+    }
+    .hero h1 {
+        font-size: 2em;
+    }
+    .hero p {
+        font-size: 0.9em;
+    }
+    .video-grid {
+        grid-template-columns: 1fr; /* סרטון אחד בטור במובייל */
+    }
+}
