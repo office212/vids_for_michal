@@ -4,135 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex"> 
-    <title>רשימת הסרטונים האישית</title>
-    <style>
-        /* CSS לעיצוב מודרני, רספונסיבי וצבעוני */
-        :root {
-            --bg-color: #f0f4f8;        /* רקע ראשי (אפור בהיר-כחלחל) */
-            --card-bg: #ffffff;         /* רקע כרטיס */
-            --primary-color: #3498db;   /* צבע ראשי (כחול רענן) */
-            --text-color: #2c3e50;      /* צבע טקסט כהה */
-            --accent-color: #42b883;    /* צבע הדגשה (ירוק מנטה) */
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 30px 20px;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            text-align: right;
-        }
-
-        h1 {
-            color: var(--primary-color);
-            border-bottom: 3px solid var(--accent-color);
-            padding-bottom: 12px;
-            margin-bottom: 40px;
-            text-align: center;
-            font-size: 2.2em;
-            font-weight: 700;
-        }
-
-        /* רשת גמישה לתצוגת כרטיסים */
-        .video-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        /* כרטיס סרטון */
-        .video-card {
-            background-color: var(--card-bg);
-            border-radius: 15px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .video-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
-        }
-
-        /* כותרת הסרטון */
-        .video-title {
-            padding: 15px 20px 10px;
-            font-size: 1.15em;
-            font-weight: 600;
-            color: var(--text-color);
-            line-height: 1.4;
-            min-height: 50px; /* כדי לשמור על גובה אחיד יחסית בין הכרטיסים */
-            display: flex;
-            align-items: center;
-        }
-        
-        /* עטיפה ליחס גובה-רוחב 16:9 לנגן ה-YouTube */
-        .video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%; /* יחס 16:9 */
-            height: 0;
-            background-color: #000;
-        }
-
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-    </style>
+    <title>הגלריה הפרטית שלך</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <h1>רשימת הצפייה האישית שלך</h1>
-
-    <div class="video-container" id="video-container">
+    <header class="hero">
+        <div class="hero-content">
+            <h1>ברוך הבא לגלריה האישית שלך</h1>
+            <p>מקום שקט ופרטי ליהנות מסרטונים שבחרת במיוחד.</p>
         </div>
+    </header>
 
-    <script>
-        // *******************************************************************
-        // *** עדכון סרטונים: כאן מעדכנים את רשימת הסרטונים והכותרות שלהם ***
-        // *** (זהו המקום היחיד שצריך לערוך כדי להוסיף או להסיר סרטון)      ***
-        // *******************************************************************
-        const videos = [
-            { id: '_sptvVbn2PM', title: 'בכיר בשב"כ שעבר מוות קליני בחשיפה מטלטלת: "אני מופתע"' },
-            { id: 'iZEBzPb-bc0', title: '"עברתי מוות קליני - ו-14 רופאים עמדו סביבי כשאמרתי: \'אבא, תודה על החיים\'"' },
-            { id: 'PWdBgAhVzZk', title: 'הרב אייל עמרמי: אמונה, זוגיות ומה הסוד לקבל כל דבר שרוצים? - פודקאסט איך הצלחת פרק 91' },
-            { id: 'hpsmc9aokzk', title: 'הרב אייל עמרמי: "מחלל שבת יכול לשמח את הקב"ה יותר מהבבא סאלי"' },
-            { id: 't-iLsM12Ue0', title: 'פודקאסט המוג׳ו של בן בן ברוך - איתי בנדה (מארחים את יוחאי ספונדר ומני מלכה) #324' }
-        ];
-        
-        const container = document.getElementById('video-container');
+    <main class="content-section">
+        <div class="video-grid" id="video-container">
+            </div>
+    </main>
 
-        // לולאה שיוצרת את ה-HTML עבור כל סרטון
-        videos.forEach(video => {
-            const videoCard = document.createElement('div');
-            videoCard.classList.add('video-card');
+    <footer>
+        <p>&copy; 2023 כל הזכויות שמורות לך.</p>
+    </footer>
 
-            // 1. הוספת הכותרת של הסרטון
-            const titleHTML = `<div class="video-title">${video.title}</div>`;
-
-            // 2. בניית כתובת ה-iframe עבור הנגן
-            const iframeHTML = `
-                <div class="video-wrapper">
-                    <iframe 
-                        src="https://www.youtube.com/embed/${video.id}?autoplay=0&controls=1&modestbranding=1&rel=0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                    </iframe>
-                </div>
-            `;
-            
-            // שילוב הכותרת והנגן בכרטיס (כותרת מעל הנגן)
-            videoCard.innerHTML = titleHTML + iframeHTML;
-            container.appendChild(videoCard);
-        });
-    </script>
-
+    <script src="script.js"></script>
 </body>
 </html>
