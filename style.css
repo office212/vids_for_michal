@@ -15,22 +15,21 @@ body {
     color: var(--primary-text);
 }
 
-/* --- רקע חי ועוצמתי --- */
+/* --- רקע חי ועוצמתי (מודגש!) --- */
 .bg-layer {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
     background-size: cover;
     background-position: center;
     opacity: 0;
-    transition: opacity 1s ease-in-out; /* מעבר חלק בין רקעים */
+    transition: opacity 1s ease-in-out;
     z-index: -2;
     
-    /* הסוד לצבעים חזקים: */
-    /* 1. Blur חזק מאוד */
-    /* 2. Saturation פי 2 מהרגיל */
-    /* 3. Brightness נמוך כדי לשמור על רקע כהה */
-    filter: blur(80px) saturate(220%) brightness(0.6) contrast(1.1);
-    transform: scale(1.2); /* מונע שוליים לבנים בגלל הטשטוש */
+    /* --- כאן השינוי הגדול --- */
+    /* הרוויה הוגברה משמעותית ל-350% והקונטרסט הועלה */
+    filter: blur(90px) saturate(350%) brightness(0.55) contrast(1.25);
+    
+    transform: scale(1.3); /* הגדלתי קצת את הסקייל כדי למנוע שוליים בגלל הבלר החזק */
 }
 
 .bg-layer.active {
@@ -39,8 +38,8 @@ body {
 
 .overlay-texture {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    /* וינייט חזק - כהה בפינות, שקוף במרכז */
-    background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, #000 90%);
+    /* הכהתי מעט את המרכז כדי שהטקסט יהיה קריא על הרקע הצבעוני */
+    background: radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, #000 85%);
     z-index: -1; pointer-events: none;
 }
 
@@ -80,8 +79,6 @@ header h1 { font-family: 'Heebo', sans-serif; font-size: 3rem; font-weight: 800;
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(20px);
     overflow: hidden;
-    
-    /* מצב לא פעיל */
     opacity: 0.5; 
     transform: scale(0.9);
     transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
