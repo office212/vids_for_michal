@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     
     let swiperInstance = null;
-    let currentBgIndex = 1; // כדי לדעת איזה רקע פעיל כרגע
+    let currentBgIndex = 1; 
 
     const gridContainer = document.getElementById('grid-container');
     const toggleBtn = document.getElementById('toggle-view-btn');
@@ -14,20 +14,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const wrapper = document.getElementById('swiper-wrapper');
 
             videos.forEach((video, index) => {
-                // שימוש ב-HD לתמונה הראשית
                 const hdUrl = `https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`;
                 const mqUrl = `https://img.youtube.com/vi/${video.id}/mqdefault.jpg`;
 
-                // 1. יצירת שקופית לגלגל (Swiper)
+                // --- 1. יצירת שקופית לגלגל ---
                 const slide = document.createElement('div');
                 slide.classList.add('swiper-slide');
                 
-                // הזרקת המבנה - וידאו לחוד וכותרת לחוד
+                // הוספתי data-video-id ו-data-title למיכל הוידאו לשחזור קל
                 slide.innerHTML = `
-                    <div class="slide-video-box" onclick="playVideo(this, '${video.id}')">
+                    <div class="slide-video-box" 
+                         data-video-id="${video.id}" 
+                         onclick="playVideo(this)">
+                        
                         <img src="${hdUrl}" 
                              onerror="this.src='${mqUrl}'" 
                              alt="${video.title}">
+                        
                         <div class="play-btn">
                             <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                         </div>
@@ -38,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 wrapper.appendChild(slide);
 
-                // 2. יצירת פריט לרשימה (Grid)
+                // --- 2. יצירת פריט לרשימה ---
                 const gridItem = document.createElement('div');
                 gridItem.classList.add('grid-item');
                 gridItem.innerHTML = `
@@ -50,7 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 gridItem.addEventListener('click', () => {
                     closeListView();
-                    if (swiperInstance) swiperInstance.slideToLoop(index);
+                    if (swiperInstance) {
+                        swiperInstance.slideToLoop(index);
+                        stopAllVideos(); // עוצר סרטונים במעבר דרך הרשימה
+                    }
                 });
                 gridContainer.appendChild(gridItem);
             });
@@ -60,7 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(err => console.error('Error loading videos:', err));
 
     // ניהול תצוגת רשימה
-    toggleBtn.addEventListener('click', () => listOverlay.classList.add('active'));
+    toggleBtn.addEventListener('click', () => {
+        stopAllVideos(); // עוצר את הוידאו אם פותחים את הרשימה
+        listOverlay.classList.add('active');
+    });
+    
     closeListBtn.addEventListener('click', closeListView);
 
     function closeListView() {
@@ -81,24 +91,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 stretch: 0,
                 depth: 150,
                 modifier: 2,
-                slideShadows: false, // אנחנו עושים צללים ב-CSS
+                slideShadows: false,
             },
             
             pagination: { el: ".swiper-pagination", clickable: true },
             navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
             keyboard: { enabled: true },
 
-            // עדכון רקע
             on: {
                 init: function() { updateBackground(this); },
-                slideChangeTransitionStart: function() { updateBackground(this); }
+                
+                // --- השינוי החשוב: עצירת וידאו בגלילה ---
+                slideChangeTransitionStart: function() { 
+                    stopAllVideos(); // <--- הנה הקסם
+                    updateBackground(this); 
+                }
             }
         });
     }
 
-    // פונקציית עדכון רקע עם מעבר חלק (Crossfade)
     function updateBackground(swiper) {
-        // מציאת השקופית הפעילה (גם בתוך לופ)
         const activeSlide = swiper.slides[swiper.activeIndex];
         const img = activeSlide.querySelector('img');
         
@@ -107,21 +119,30 @@ document.addEventListener('DOMContentLoaded', () => {
             const currentBgEl = document.getElementById(currentBgIndex === 1 ? 'bg-1' : 'bg-2');
             const nextBgEl = document.getElementById(nextBgId);
 
-            // טעינת התמונה לרקע הבא (הנסתר)
             nextBgEl.style.backgroundImage = `url(${img.src})`;
-            
-            // החלפת ה-Classes כדי לבצע את הפייד
             nextBgEl.classList.add('active');
             currentBgEl.classList.remove('active');
 
-            // החלפת האינדקס לפעם הבאה
             currentBgIndex = currentBgIndex === 1 ? 2 : 1;
         }
     }
 });
 
-// פונקציית הפעלת וידאו
-window.playVideo = function(container, videoId) {
+// --- ניהול הנגן ---
+
+// פונקציה להפעלת הוידאו
+window.playVideo = function(container) {
+    // 1. שמירת ה-HTML המקורי (תמונה וכפתור) כדי שנוכל לשחזר אותו
+    if (!container.dataset.originalHtml) {
+        container.dataset.originalHtml = container.innerHTML;
+    }
+
+    // 2. סימון שהכרטיס הזה מנגן כרגע
+    container.classList.add('is-playing');
+
+    const videoId = container.dataset.videoId;
+
+    // 3. החלפת התוכן באייפריים
     container.innerHTML = `
         <iframe class="youtube-iframe" 
             src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&controls=1" 
@@ -129,6 +150,26 @@ window.playVideo = function(container, videoId) {
             allowfullscreen>
         </iframe>
     `;
-    // מניעת לחיצה חוזרת
+    
+    // ביטול לחיצה חוזרת על הוידאו עצמו
     container.onclick = null;
+};
+
+// פונקציה לעצירת כל הסרטונים (שחזור המצב הקודם)
+window.stopAllVideos = function() {
+    // מוצא את כל האלמנטים שמנגנים כרגע
+    const playingContainers = document.querySelectorAll('.slide-video-box.is-playing');
+
+    playingContainers.forEach(container => {
+        // משחזר את ה-HTML המקורי (תמונה + כפתור)
+        if (container.dataset.originalHtml) {
+            container.innerHTML = container.dataset.originalHtml;
+        }
+        
+        // מסיר את הסימון "מנגן"
+        container.classList.remove('is-playing');
+        
+        // מחזיר את אירוע הלחיצה
+        container.onclick = function() { playVideo(this); };
+    });
 };
