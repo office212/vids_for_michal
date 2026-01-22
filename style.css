@@ -1,12 +1,8 @@
 :root {
-    --bg-color: #050505;
-    --card-bg: rgba(255, 255, 255, 0.05);
-    --card-border: rgba(255, 255, 255, 0.1);
-    --primary-glow: #bd00ff;
-    --secondary-glow: #00ccff;
-    --text-main: #ffffff;
-    --font-heading: 'Heebo', sans-serif;
-    --font-body: 'Rubik', sans-serif;
+    --bg-dark: #0f0c29;
+    --bg-gradient: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+    --accent: #00d2ff;
+    --glass: rgba(255, 255, 255, 0.1);
 }
 
 * {
@@ -16,169 +12,163 @@
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text-main);
-    font-family: var(--font-body);
-    overflow-x: hidden; /* מונע גלילה לצדדים */
-    min-height: 100vh;
-    /* רקע בסיס למקרה שהאנימציה לא נטענת */
-    background: radial-gradient(circle at center, #1a0b2e 0%, #000000 100%);
+    background: var(--bg-dark);
+    font-family: 'Rubik', sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* מונע גלילה של כל העמוד, רק הקרוסלה זזה */
+    color: white;
 }
 
-/* --- רקע ואפקטים --- */
-.aurora-blob {
+/* רקע עמוק */
+.bg-gradient {
     position: fixed;
-    border-radius: 50%;
-    filter: blur(80px);
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--bg-gradient);
     z-index: -2;
-    opacity: 0.5;
-    animation: floatBlob 20s infinite alternate;
 }
 
-.blob-1 { width: 300px; height: 300px; background: var(--primary-glow); top: -50px; right: -50px; }
-.blob-2 { width: 250px; height: 250px; background: var(--secondary-glow); bottom: -50px; left: -50px; }
-
-@keyframes floatBlob {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(-20px, 40px); }
-}
-
-.main-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+.app-container {
     width: 100%;
-}
-
-/* --- כותרת --- */
-header {
-    min-height: 60vh;
+    max-width: 100%;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding-top: 40px;
 }
 
-.title-wrapper h1 {
-    font-family: var(--font-heading);
-    font-size: clamp(3.5rem, 12vw, 8rem); /* גודל דינמי שמתאים לנייד */
-    line-height: 0.9;
+header {
+    text-align: center;
+    margin-bottom: 20px;
+    z-index: 10;
+    position: absolute;
+    top: 5%;
+    width: 100%;
+}
+
+header h1 {
+    font-family: 'Heebo', sans-serif;
     font-weight: 900;
-    margin: 15px 0;
-    background: linear-gradient(180deg, #fff, rgba(255,255,255,0.5));
+    font-size: 3rem;
+    letter-spacing: 2px;
+    background: linear-gradient(to bottom, #fff, #aaa);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    text-shadow: 0 10px 20px rgba(0,0,0,0.5);
 }
 
-.small-tag {
-    font-size: 0.8rem;
-    color: var(--secondary-glow);
-    border: 1px solid var(--secondary-glow);
-    padding: 5px 15px;
-    border-radius: 50px;
+header p {
+    font-size: 1rem;
+    opacity: 0.6;
+    margin-top: 5px;
 }
 
-.subtitle {
-    opacity: 0.7;
-    margin-top: 10px;
-}
-
-/* --- גריד הסרטונים --- */
-.grid-section {
-    display: grid;
-    /* תיקון חשוב: הגודל המינימלי ירד ל-280 כדי להתאים לנייד */
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 30px;
-    padding-bottom: 80px;
+/* --- הגדרות ה-SWIPER (הקרוסלה) --- */
+.swiper {
     width: 100%;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    overflow: visible !important; /* מאפשר לצללים לצאת מהגבולות */
 }
 
-/* --- כרטיס --- */
-.video-card-3d {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
+.swiper-slide {
+    background-position: center;
+    background-size: cover;
+    width: 300px; /* רוחב בסיסי במובייל */
+    height: 420px; /* גובה הכרטיס */
+    background: var(--glass);
     border-radius: 20px;
-    padding: 15px;
-    backdrop-filter: blur(10px);
-    transition: transform 0.3s ease;
-    overflow: hidden; /* חובה כדי שהתוכן לא יישפך */
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(15px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.5s;
+    
+    /* אפקט השתקפות יוקרתי (עובד בעיקר בכרום/אייפון) */
+    -webkit-box-reflect: below 1px linear-gradient(transparent, transparent, rgba(0,0,0,0.3));
 }
 
-/* אזור הוידאו - שומר על יחס 16:9 */
-.video-thumb-container {
+/* התאמה למסכים גדולים */
+@media (min-width: 768px) {
+    .swiper-slide {
+        width: 600px;
+        height: 450px;
+    }
+}
+
+/* תוכן הכרטיס */
+.slide-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.video-area {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 9; /* שומר על פרופורציה של וידאו */
-    border-radius: 12px;
-    overflow: hidden;
+    height: 100%; /* תופס את רוב הכרטיס */
     background: #000;
 }
 
-.video-thumb-container img {
+.video-area img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
+    opacity: 0.8;
+    transition: 0.3s;
 }
 
-/* אייפרייים של יוטיוב */
-.video-thumb-container iframe {
+/* כותרת בתחתית הכרטיס */
+.meta-data {
     position: absolute;
-    top: 0;
+    bottom: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    border: none;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    z-index: 5;
+    transform: translateY(10px);
+    transition: 0.3s;
 }
 
-/* כפתור PLAY */
-.play-icon-overlay {
+.meta-data h3 {
+    font-size: 1.2rem;
+    color: #fff;
+    text-align: right;
+}
+
+/* כפתור ניגון */
+.play-btn {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 60px;
-    height: 60px;
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.4);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    width: 70px; height: 70px;
+    background: rgba(255,255,255,0.2);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255,255,255,0.5);
+    box-shadow: 0 0 30px rgba(0,210,255, 0.3);
     cursor: pointer;
-    backdrop-filter: blur(4px);
+    transition: 0.3s;
+}
+
+.play-btn svg { width: 30px; fill: white; margin-left: 5px; }
+
+/* מצב פעיל (הסרטון שבמרכז) */
+.swiper-slide-active .video-area img { opacity: 1; }
+.swiper-slide-active .play-btn { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 50px var(--accent); }
+.swiper-slide-active { border: 1px solid rgba(255,255,255,0.6); }
+
+/* נגן יוטיוב */
+.video-area iframe {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    border: none;
     z-index: 10;
-}
-
-.play-icon-overlay svg {
-    width: 24px;
-    height: 24px;
-    fill: #fff;
-    margin-left: 3px;
-}
-
-.card-title {
-    margin-top: 15px;
-    color: #fff;
-    font-size: 1.1rem;
-    text-align: right;
-}
-
-/* תיקון למובייל */
-@media (max-width: 600px) {
-    .main-container {
-        padding: 0 15px;
-    }
-    
-    header {
-        min-height: auto;
-        padding: 60px 0 40px;
-    }
-    
-    /* במובייל מבטלים את אפקט התלת מימד המורכב כדי למנוע באגים */
-    .video-card-3d {
-        transform: none !important;
-    }
 }
