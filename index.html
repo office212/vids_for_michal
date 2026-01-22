@@ -3,28 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Infinity Gallery</title>
+    <title>Premium Gallery</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=4">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&family=Rubik:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&family=Rubik:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div class="background-layer" id="bg-layer"></div>
-    <div class="overlay-pattern"></div>
+    <div class="aurora-bg">
+        <div class="aurora-blob blob-1" id="blob1"></div>
+        <div class="aurora-blob blob-2" id="blob2"></div>
+        <div class="aurora-blob blob-3"></div>
+    </div>
+    <div class="overlay-texture"></div>
 
     <button class="view-toggle-btn" id="toggle-view-btn" aria-label="הצג רשימה">
-        <svg viewBox="0 0 24 24"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/></svg>
-        <span>רשימה מלאה</span>
+        <svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+        <span>ספרייה</span>
     </button>
 
     <div class="main-stage">
         <header>
-            <div class="brand">MY SPACE</div>
+            <div class="brand">PREMIUM SPACE</div>
             <h1>האזור האישי</h1>
         </header>
 
@@ -33,21 +37,23 @@
                 </div>
             
             <div class="swiper-pagination"></div>
-            <div class="swiper-button-next"></div>
             <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
         </div>
     </div>
 
     <div class="list-overlay" id="list-overlay">
         <div class="list-header">
             <h2>כל הסרטונים</h2>
-            <button class="close-list-btn" id="close-list-btn">✕</button>
+            <button class="close-list-btn" id="close-list-btn">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
         </div>
         <div class="grid-container" id="grid-container">
             </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="script.js?v=3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script> <script src="script.js?v=4"></script>
 </body>
 </html>
