@@ -1,41 +1,66 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const videoContainer = document.getElementById('video-container');
-
-    // וודא שקובץ ה-JSON קיים, אחרת תשתמש במערך לבדיקה
+    
     fetch('videos.json')
-        .then(res => {
-            if (!res.ok) throw new Error('Failed to load');
-            return res.json();
-        })
+        .then(res => res.json())
         .then(videos => {
-            videos.forEach(video => {
-                const card = document.createElement('div');
-                card.classList.add('video-card-3d');
-                
-                // שימוש בתמונה באיכות גבוהה, ואם אין - רגילה
-                const imgUrl = `https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`;
-                const fallbackUrl = `https://img.youtube.com/vi/${video.id}/hqdefault.jpg`;
+            const wrapper = document.getElementById('swiper-wrapper');
 
-                card.innerHTML = `
-                    <div class="video-thumb-container" onclick="playVideo(this, '${video.id}')">
-                        <img src="${imgUrl}" 
-                             onerror="this.src='${fallbackUrl}'" 
-                             alt="${video.title}">
-                        <div class="play-icon-overlay">
-                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            videos.forEach(video => {
+                const slide = document.createElement('div');
+                slide.classList.add('swiper-slide');
+
+                // מבנה הכרטיס
+                slide.innerHTML = `
+                    <div class="slide-content">
+                        <div class="video-area" onclick="loadVideo(this, '${video.id}')">
+                            <img src="https://img.youtube.com/vi/${video.id}/maxresdefault.jpg" 
+                                 onerror="this.src='https://img.youtube.com/vi/${video.id}/hqdefault.jpg'">
+                            
+                            <div class="play-btn">
+                                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+
+                            <div class="meta-data">
+                                <h3>${video.title}</h3>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-title">${video.title}</div>
                 `;
-
-                videoContainer.appendChild(card);
+                wrapper.appendChild(slide);
             });
+
+            // הפעלת ה-Swiper (האפקט התלת מימדי)
+            initSwiper();
         })
-        .catch(err => console.error(err));
+        .catch(err => console.error('Error:', err));
 });
 
-// פונקציה חיצונית להפעלת הוידאו
-function playVideo(container, videoId) {
+function initSwiper() {
+    new Swiper(".mySwiper", {
+        effect: "coverflow", // זה האפקט של ה"גלגל"
+        grabCursor: true,
+        centeredSlides: true,
+        slidesPerView: "auto", // נותן לכרטיסים גודל טבעי
+        initialSlide: 1, // מתחיל מהסרטון השני כדי שיראו שיש צדדים
+        
+        // הגדרות העומק והסיבוב
+        coverflowEffect: {
+            rotate: 40,    // זווית הסיבוב של הכרטיסים בצד
+            stretch: 0,
+            depth: 200,    // כמה עמוק הם הולכים אחורה
+            modifier: 1,
+            slideShadows: true, // צללים ריאליסטיים
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+    });
+}
+
+// פונקציה לטעינת הוידאו בלחיצה
+window.loadVideo = function(container, videoId) {
+    // מנקה את התמונה והכפתור
     container.innerHTML = `
         <iframe 
             src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1" 
@@ -43,4 +68,6 @@ function playVideo(container, videoId) {
             allowfullscreen>
         </iframe>
     `;
-}
+    // מבטל הקלקה נוספת
+    container.onclick = null;
+};
