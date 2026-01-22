@@ -1,10 +1,13 @@
 :root {
-    --primary-color: #6a1b9a; /* סגול עמוק */
-    --text-color: #2d1b2e;
-    --glass-bg: rgba(255, 255, 255, 0.25);
-    --glass-border: rgba(255, 255, 255, 0.6);
-    --card-hover: rgba(255, 255, 255, 0.45);
-    --shadow-soft: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+    --bg-color: #050505;
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --primary-glow: #bd00ff;
+    --secondary-glow: #00ccff;
+    --text-main: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.6);
+    --font-heading: 'Heebo', sans-serif;
+    --font-body: 'Rubik', sans-serif;
 }
 
 * {
@@ -14,222 +17,244 @@
 }
 
 body {
-    font-family: 'Rubik', sans-serif;
-    min-height: 100vh;
-    color: var(--text-color);
-    background-color: #ffdde1;
-    /* רקע מורכב יותר ורך */
-    background-image: 
-        radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
-        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
-    background: linear-gradient(120deg, #ff9a9e 0%, #fecfef 100%);
-    background-size: 200% 200%;
-    animation: gradientBG 15s ease infinite;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: var(--font-body);
     overflow-x: hidden;
+    min-height: 100vh;
 }
 
-/* הוספת אלמנטים צפים ברקע לאווירה קסומה */
-body::before, body::after {
-    content: '';
+/* --- רקע סינמטי (Noise + Aurora) --- */
+.background-noise {
     position: fixed;
-    width: 300px;
-    height: 300px;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: url('https://grainy-gradients.vercel.app/noise.svg');
+    opacity: 0.07;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.aurora-blob {
+    position: fixed;
     border-radius: 50%;
     filter: blur(80px);
-    z-index: -1;
-    animation: float 10s infinite ease-in-out alternate;
+    z-index: -2;
+    opacity: 0.6;
+    animation: floatBlob 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-body::before {
-    background: #a18cd1;
-    top: -50px;
-    left: -50px;
+.blob-1 {
+    width: 500px; height: 500px;
+    background: var(--primary-glow);
+    top: -100px; right: -100px;
 }
 
-body::after {
-    background: #ff9a9e;
-    bottom: -50px;
-    right: -50px;
+.blob-2 {
+    width: 400px; height: 400px;
+    background: var(--secondary-glow);
+    bottom: -100px; left: -50px;
     animation-delay: -5s;
 }
 
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+.blob-3 {
+    width: 300px; height: 300px;
+    background: #ff0055;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.3;
+    animation: pulseBlob 15s infinite alternate;
 }
 
-@keyframes float {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(30px, 50px); }
+@keyframes floatBlob {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(-30px, 50px) scale(1.1); }
 }
 
-/* אנימציית כניסה לאלמנטים */
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.main-wrapper {
-    max-width: 1200px;
+/* --- מכולה ראשית --- */
+.main-container {
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 0 20px;
 }
 
-/* --- כותרת ראשית --- */
-.header-glass {
-    background: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 30px;
-    padding: 60px 20px;
-    text-align: center;
-    margin-bottom: 60px;
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-soft);
-    animation: fadeInUp 1s ease-out;
-}
-
-.header-content h1 {
-    font-weight: 800;
-    font-size: 3.5rem;
-    background: -webkit-linear-gradient(#fff, #f3e5f5);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    margin-bottom: 15px;
-    letter-spacing: -1px;
-}
-
-.header-content .subtitle {
-    font-size: 1.4rem;
-    color: #fff;
-    font-weight: 400;
-    opacity: 0.9;
-    letter-spacing: 0.5px;
-}
-
-/* --- רשת הסרטונים --- */
-.video-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 40px;
-}
-
-/* --- כרטיס סרטון --- */
-.video-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-radius: 24px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+/* --- כותרת דרמטית --- */
+header {
+    height: 70vh; /* תופס את רוב המסך בהתחלה */
     display: flex;
     flex-direction: column;
-    animation: fadeInUp 0.8s ease-out backwards; /* כל כרטיס יקבל delay ב-JS */
-}
-
-.video-card:hover {
-    transform: translateY(-12px) scale(1.02);
-    background: var(--card-hover);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-    border-color: #fff;
-}
-
-/* תמונת הסרטון */
-.video-wrapper {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     position: relative;
-    padding-bottom: 56.25%; /* 16:9 */
-    height: 0;
-    background: #000;
-    overflow: hidden;
 }
 
-.video-wrapper img {
+.title-wrapper h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(4rem, 10vw, 9rem); /* טקסט ענק רספונסיבי */
+    line-height: 0.9;
+    font-weight: 900;
+    letter-spacing: -2px;
+    background: linear-gradient(180deg, #fff, rgba(255,255,255,0.4));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 20px 0;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    animation: scaleIn 1.5s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+}
+
+.small-tag {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--secondary-glow);
+    border: 1px solid var(--secondary-glow);
+    padding: 8px 16px;
+    border-radius: 50px;
+    display: inline-block;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* --- גריד הסרטונים --- */
+.grid-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 40px;
+    padding-bottom: 100px;
+    perspective: 1000px; /* חובה עבור אפקט התלת מימד */
+}
+
+/* --- כרטיס תלת-ממד מתקדם --- */
+.video-card-3d {
+    position: relative;
+    border-radius: 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(20px);
+    overflow: hidden;
+    transition: transform 0.1s ease, box-shadow 0.3s ease; /* transition מהיר מאוד לתנועה */
+    transform-style: preserve-3d;
+    cursor: pointer;
+}
+
+/* האפקט הפנימי של הכרטיס */
+.card-content {
+    position: relative;
+    z-index: 2;
+    padding: 15px;
+    transform: translateZ(20px); /* מבליט את התוכן החוצה */
+}
+
+/* הוידאו */
+.video-thumb-container {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.video-thumb-container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
-    opacity: 0.9;
+    transition: transform 0.6s ease;
 }
 
-.video-card:hover .video-wrapper img {
-    transform: scale(1.05);
-    opacity: 1;
+.video-card-3d:hover .video-thumb-container img {
+    transform: scale(1.1);
 }
 
-/* כפתור Play מותאם אישית ואלגנטי */
-.custom-play-btn {
+/* כפתור Play זוהר */
+.play-icon-overlay {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 70px;
-    height: 70px;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(5px);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    width: 60px; height: 60px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0.8;
 }
 
-.custom-play-btn svg {
-    width: 30px;
-    height: 30px;
-    fill: #fff;
-    margin-left: 4px; /* תיקון אופטי למרכז המשולש */
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+.play-icon-overlay svg {
+    width: 20px; height: 20px; fill: #fff; margin-left: 2px;
 }
 
-.video-card:hover .custom-play-btn {
-    background: rgba(255, 255, 255, 0.9);
+.video-card-3d:hover .play-icon-overlay {
     transform: translate(-50%, -50%) scale(1.1);
+    background: #fff;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
 }
 
-.video-card:hover .custom-play-btn svg {
-    fill: var(--primary-color);
+.video-card-3d:hover .play-icon-overlay svg {
+    fill: #000;
+}
+
+.card-title {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-main);
+    text-align: right;
+    padding: 0 5px 10px;
+}
+
+/* אפקט זוהר במסגרת כשעוברים עכבר */
+.video-card-3d::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 20px;
+    padding: 2px;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+}
+
+.video-card-3d:hover::before {
+    opacity: 1;
 }
 
 .video-wrapper iframe {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
+    top: 0; left: 0; width: 100%; height: 100%;
+    border-radius: 12px;
 }
 
-/* כותרת הסרטון - מתחת לוידאו */
-.video-title {
-    padding: 25px 20px;
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: var(--text-color);
-    text-align: center;
-    line-height: 1.4;
+/* --- אנימציות --- */
+@keyframes scaleIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
-/* --- פוטר --- */
 footer {
     text-align: center;
-    margin-top: 80px;
-    color: #fff;
-    font-weight: 500;
-    opacity: 0.9;
-    padding-bottom: 20px;
+    padding-bottom: 40px;
+    opacity: 0.5;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
 }
 
-/* מובייל */
+.footer-line {
+    width: 50px; height: 1px; background: #fff;
+    margin: 0 auto 20px;
+}
+
 @media (max-width: 768px) {
-    .header-content h1 { font-size: 2.2rem; }
-    .main-wrapper { padding: 20px 15px; }
-    .video-grid { gap: 25px; }
+    header { height: 50vh; }
+    .grid-section { gap: 20px; padding: 0 10px 100px; }
 }
