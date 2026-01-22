@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleBtn = document.getElementById('toggle-view-btn');
     const closeListBtn = document.getElementById('close-list-btn');
     const listOverlay = document.getElementById('list-overlay');
+    const colorThief = new ColorThief(); // מאתחל את גנב הצבעים
 
     fetch('videos.json')
         .then(res => res.json())
@@ -12,38 +13,43 @@ document.addEventListener('DOMContentLoaded', () => {
             const wrapper = document.getElementById('swiper-wrapper');
 
             videos.forEach((video, index) => {
+                // שימוש בתמונה רגילה כדי שהסקריפט יוכל לקרוא את הצבעים (בעיית CORS עם HD)
                 const imgUrl = `https://img.youtube.com/vi/${video.id}/mqdefault.jpg`;
-                const hdUrl = `https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`;
 
-                // 1. יצירת שקופית לגלגל (Swiper)
+                // --- יצירת שקופית לקרוסלה (Swiper) ---
                 const slide = document.createElement('div');
                 slide.classList.add('swiper-slide');
+                
+                // מבנה חדש: וידאו בנפרד, כותרת בנפרד
                 slide.innerHTML = `
-                    <div class="card-content" onclick="playVideo(this, '${video.id}')">
-                        <img src="${hdUrl}" onerror="this.src='${imgUrl}'" alt="${video.title}">
+                    <div class="slide-video-container" onclick="playVideo(this, '${video.id}')">
+                        <img src="${imgUrl}" alt="${video.title}" crossorigin="anonymous">
                         <div class="play-btn">
                             <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                         </div>
-                        <div class="video-info">
-                            <h3>${video.title}</h3>
-                        </div>
+                    </div>
+                    <div class="slide-title-container">
+                        <h3>${video.title}</h3>
                     </div>
                 `;
                 wrapper.appendChild(slide);
 
-                // 2. יצירת פריט לרשימה (Grid)
+                // --- יצירת פריט לרשימה (Grid) ---
                 const gridItem = document.createElement('div');
                 gridItem.classList.add('grid-item');
+                gridItem.style.animationDelay = `${index * 0.1}s`; // דיליי לאנימציית כניסה
+                
+                // גם כאן - תמונה וכותרת מתחתיה
                 gridItem.innerHTML = `
-                    <img src="${imgUrl}" loading="lazy" alt="${video.title}">
-                    <p>${video.title}</p>
+                    <div class="grid-thumb-wrapper">
+                         <img src="${imgUrl}" loading="lazy" alt="${video.title}">
+                    </div>
+                    <h3>${video.title}</h3>
                 `;
-                // כשלוחצים על פריט ברשימה -> סוגרים רשימה ומעבירים את הגלגל
+                
                 gridItem.addEventListener('click', () => {
                     closeListView();
-                    if (swiperInstance) {
-                        swiperInstance.slideToLoop(index); // קפיצה חכמה בלופ
-                    }
+                    if (swiperInstance) swiperInstance.slideToLoop(index);
                 });
                 gridContainer.appendChild(gridItem);
             });
@@ -52,12 +58,16 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(err => console.error('Error:', err));
 
-    // ניהול פתיחה/סגירה של הרשימה
-    toggleBtn.addEventListener('click', () => listOverlay.classList.add('active'));
+    // ניהול תצוגת רשימה
+    toggleBtn.addEventListener('click', () => {
+        listOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // מונע גלילה ברקע
+    });
     closeListBtn.addEventListener('click', closeListView);
 
     function closeListView() {
         listOverlay.classList.remove('active');
+        document.body.style.overflow = '';
     }
 
     function initSwiper() {
@@ -66,14 +76,15 @@ document.addEventListener('DOMContentLoaded', () => {
             grabCursor: true,
             centeredSlides: true,
             slidesPerView: "auto",
-            loop: true, // לופ אינסופי!
+            loop: true,
+            speed: 600, // מעבר חלק יותר
             
             coverflowEffect: {
                 rotate: 0,
                 stretch: 0,
-                depth: 150,
-                modifier: 2,
-                slideShadows: true,
+                depth: 200, // עומק דרמטי יותר
+                modifier: 1.5,
+                slideShadows: false, // ביטלתי את הצללים המובנים של סווייפר לטובת שליטה ידנית ב-CSS
             },
             
             pagination: { el: ".swiper-pagination", clickable: true },
@@ -81,18 +92,40 @@ document.addEventListener('DOMContentLoaded', () => {
             keyboard: { enabled: true },
 
             on: {
-                init: function() { updateBackground(this); },
-                slideChangeTransitionStart: function() { updateBackground(this); }
+                // עדכון רקע בעת טעינה ובעת שינוי שקופית
+                init: function() { updateDynamicBackground(this); },
+                slideChangeTransitionStart: function() { updateDynamicBackground(this); }
             }
         });
     }
 
-    function updateBackground(swiper) {
-        // בלופ, Swiper משכפל שקופיות, אז צריך למצוא את הפעילה האמיתית
+    // פונקציה חכמה לשאיבת צבעים מהתמונה לרקע
+    function updateDynamicBackground(swiper) {
         const activeSlide = swiper.slides[swiper.activeIndex];
         const img = activeSlide.querySelector('img');
-        if (img) {
-            document.getElementById('bg-layer').style.backgroundImage = `url(${img.src})`;
+        
+        if (img && img.complete) {
+            setColorsFromImage(img);
+        } else if (img) {
+             img.addEventListener('load', function() {
+                 setColorsFromImage(this);
+             });
+        }
+    }
+
+    function setColorsFromImage(img) {
+        try {
+            // שליפת פלטת צבעים מהתמונה
+            const palette = colorThief.getPalette(img, 3);
+            const color1 = `rgb(${palette[0][0]}, ${palette[0][1]}, ${palette[0][2]})`;
+            const color2 = `rgb(${palette[1][0]}, ${palette[1][1]}, ${palette[1][2]})`;
+            
+            // עדכון משתני ה-CSS שמפעילים את הרקע
+            document.documentElement.style.setProperty('--blob-color-1', color1);
+            document.documentElement.style.setProperty('--blob-color-2', color2);
+        } catch (e) {
+            // במקרה של שגיאה נשארים עם צבעי ברירת המחדל
+            console.log('Could not get colors from image (CORS block mostly). using defaults.');
         }
     }
 });
